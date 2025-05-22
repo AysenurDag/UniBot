@@ -16,18 +16,17 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
 
   const handleLogin = () => {
-    // TODO: validation + API çağrısı vs.
-    // Başarılıysa tab navigasyonuna geç:
+    // TODO: validation + API call vs.
     router.replace("/(tabs)");
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Giriş Yap</Text>
+      <Text style={styles.title}>Log In</Text>
 
       <TextInput
         style={styles.input}
-        placeholder="E-posta"
+        placeholder="Email"
         placeholderTextColor="#888"
         value={email}
         onChangeText={setEmail}
@@ -37,7 +36,7 @@ export default function LoginPage() {
 
       <TextInput
         style={styles.input}
-        placeholder="Şifre"
+        placeholder="Password"
         placeholderTextColor="#888"
         value={password}
         onChangeText={setPassword}
@@ -45,13 +44,13 @@ export default function LoginPage() {
       />
 
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Giriş Yap</Text>
+        <Text style={styles.buttonText}>Log In</Text>
       </TouchableOpacity>
 
       <View style={styles.footer}>
-        <Text style={styles.footerText}>Hesabınız yok mu? </Text>
+        <Text style={styles.footerText}>Don’t have an account? </Text>
         <TouchableOpacity onPress={() => router.push("/signup")}>
-          <Text style={[styles.footerText, styles.link]}>Kaydolun</Text>
+          <Text style={[styles.footerText, styles.link]}>Sign Up</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
