@@ -1,10 +1,6 @@
+//app/appointment/confirmed.tsx
 import React from "react";
-import {
-  SafeAreaView,
-  View,
-  Text,
-  StyleSheet,
-} from "react-native";
+import { SafeAreaView, View, Text, StyleSheet } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 
 export default function AppointmentConfirmed() {

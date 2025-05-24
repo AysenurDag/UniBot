@@ -1,3 +1,4 @@
+//app/services/appointmentService.ts
 import axios from "axios";
 
 export interface Advisor {
@@ -58,7 +59,10 @@ export default class AppointmentService {
   ): Promise<{ success: boolean; message?: string }> {
     if (USE_MOCK) {
       console.log(`Mock booking: advisor ${advisorId} at ${date}`);
-      return Promise.resolve({ success: true, message: "Mock randevu oluşturuldu." });
+      return Promise.resolve({
+        success: true,
+        message: "Mock randevu oluşturuldu.",
+      });
     }
     const payload = {
       academicianId: advisorId,

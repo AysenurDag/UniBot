@@ -1,3 +1,4 @@
+//app/(tabs)/index.tsx
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React from "react";

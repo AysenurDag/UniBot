@@ -1,3 +1,4 @@
+//appointment/%5BadvisorId%5D.tsx
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -8,7 +9,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import DateTimePickerModal from "react-native-modal-datetime-picker"; 
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 import AppointmentService, { Advisor } from "../services/appointmentService";
 import AdvisorCard from "../../components/AdvisorCard";
 import { Alert } from "react-native";
@@ -58,7 +59,6 @@ export default function AdvisorDetailPage() {
     );
   }
 
-  
   const formattedDate = selectedDate.toLocaleDateString("en-US", {
     weekday: "short",
     month: "short",
@@ -108,7 +108,12 @@ export default function AdvisorDetailPage() {
                 style={[styles.slot, isSelected && styles.slotSelected]}
                 onPress={() => setSelectedSlot(slot)}
               >
-                <Text style={[styles.slotText, isSelected && styles.slotTextSelected]}>
+                <Text
+                  style={[
+                    styles.slotText,
+                    isSelected && styles.slotTextSelected,
+                  ]}
+                >
                   {slot}
                 </Text>
               </TouchableOpacity>
@@ -117,43 +122,45 @@ export default function AdvisorDetailPage() {
         </View>
 
         {/* ── Randevu oluştur ── */}
-      <TouchableOpacity
-  style={[styles.createButton, !selectedSlot && styles.createButtonDisabled]}
-  disabled={!selectedSlot}
-  onPress={() =>
-    Alert.alert(
-      "Create an Appointment",
-      "Your appointment will be created, do you confirm?",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Confirm",
-          onPress: async () => {
-            const res = await AppointmentService.bookAppointment(
-              advisor.id,
-              selectedDate.toISOString()
-            );
-            if (res.success) {
-              router.push({
-                pathname: "/appointment/confirmed",
-                params: {
-                  advisorId: advisor.id.toString(),
-                  date: selectedDate.toISOString(),
-                  slot: selectedSlot!,
+        <TouchableOpacity
+          style={[
+            styles.createButton,
+            !selectedSlot && styles.createButtonDisabled,
+          ]}
+          disabled={!selectedSlot}
+          onPress={() =>
+            Alert.alert(
+              "Create an Appointment",
+              "Your appointment will be created, do you confirm?",
+              [
+                { text: "Cancel", style: "cancel" },
+                {
+                  text: "Confirm",
+                  onPress: async () => {
+                    const res = await AppointmentService.bookAppointment(
+                      advisor.id,
+                      selectedDate.toISOString()
+                    );
+                    if (res.success) {
+                      router.push({
+                        pathname: "/appointment/confirmed",
+                        params: {
+                          advisorId: advisor.id.toString(),
+                          date: selectedDate.toISOString(),
+                          slot: selectedSlot!,
+                        },
+                      });
+                    } else {
+                      console.warn(res.message);
+                    }
+                  },
                 },
-              });
-            } else {
-              console.warn(res.message);
-            }
-          },
-        },
-      ]
-    )
-  }
->
-  <Text style={styles.createButtonText}>Create Appointment</Text>
-</TouchableOpacity>
-
+              ]
+            )
+          }
+        >
+          <Text style={styles.createButtonText}>Create Appointment</Text>
+        </TouchableOpacity>
       </ScrollView>
     </>
   );

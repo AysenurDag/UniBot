@@ -1,10 +1,10 @@
+//app/appointment/index.tsx
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import { Advisor } from "../services/appointmentService";
 import AppointmentService from "../services/appointmentService";
 import AdvisorCard from "../../components/AdvisorCard";
 import { useRouter } from "expo-router";
-
 
 export default function AppointmentPage() {
   const [advisors, setAdvisors] = useState<Advisor[]>([]);
@@ -25,8 +25,8 @@ export default function AppointmentPage() {
   }, []);
 
   if (loading) {
-     return <ScrollView style={styles.container} />;
-   }
+    return <ScrollView style={styles.container} />;
+  }
 
   return (
     <ScrollView style={styles.container}>
@@ -38,8 +38,7 @@ export default function AppointmentPage() {
           description={adv.info}
           onPress={() => {
             // Danışman kartına tıklandığında detay sayfasına yönlendir
-               router.push(`/appointment/${adv.id}`);
-   
+            router.push(`/appointment/${adv.id}`);
           }}
         />
       ))}
