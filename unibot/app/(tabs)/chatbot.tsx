@@ -11,6 +11,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Image,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -57,7 +58,6 @@ export default function ChatbotPage() {
     const text = overrideText?.trim() ?? inputText.trim();
     if (!text) return;
 
-    // 1) Kullanıcı mesajı
     const userMsg: Message = {
       id: Date.now().toString(),
       sender: "user",
@@ -66,7 +66,6 @@ export default function ChatbotPage() {
     setMessages((prev) => [...prev, userMsg]);
     setInputText("");
 
-    // 2) Cevap bul
     const found = localQA.find(
       (qa) => normalize(qa.question) === normalize(text)
     );
@@ -80,7 +79,6 @@ export default function ChatbotPage() {
       text: reply,
     };
     setTimeout(() => {
-      // küçük bir delay ekleyebilirsin
       setMessages((prev) => [...prev, botMsg]);
     }, 300);
   };
@@ -89,16 +87,27 @@ export default function ChatbotPage() {
     flatListRef.current?.scrollToEnd({ animated: true });
   }, [messages]);
 
-  const renderItem = ({ item }: { item: Message }) => (
-    <View
-      style={[
-        styles.bubble,
-        item.sender === "user" ? styles.userBubble : styles.botBubble,
-      ]}
-    >
-      <Text style={styles.bubbleText}>{item.text}</Text>
-    </View>
-  );
+  const renderItem = ({ item }: { item: Message }) => {
+    if (item.sender === "bot") {
+      return (
+        <View style={styles.botContainer}>
+          <Image
+            source={require("../../assets/images/chatbotIcon.png")}
+            style={styles.avatar}
+          />
+          <View style={[styles.bubble, styles.botBubble]}>
+            <Text style={styles.bubbleText}>{item.text}</Text>
+          </View>
+        </View>
+      );
+    } else {
+      return (
+        <View style={[styles.bubble, styles.userBubble]}>
+          <Text style={styles.bubbleText}>{item.text}</Text>
+        </View>
+      );
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -110,7 +119,6 @@ export default function ChatbotPage() {
         contentContainerStyle={styles.chatContainer}
       />
 
-      {/* Sorular için hızlı chip’ler */}
       <View style={styles.chipContainer}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {localQA.map((qa) => (
@@ -125,7 +133,6 @@ export default function ChatbotPage() {
         </ScrollView>
       </View>
 
-      {/* Mesaj input + Gönder butonu */}
       <KeyboardAvoidingView
         behavior={Platform.select({ ios: "padding", android: undefined })}
         keyboardVerticalOffset={80}
@@ -163,12 +170,21 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
     backgroundColor: "#3b82f6",
   },
+  botContainer: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+  },
+  avatar: {
+    width: 60,
+    height: 60,
+    marginRight: 8,
+    borderRadius: 18,
+  },
   botBubble: {
     alignSelf: "flex-start",
     backgroundColor: "#333",
   },
   bubbleText: { color: "white", fontSize: 16 },
-
   chipContainer: {
     paddingVertical: 8,
     borderTopWidth: 1,
@@ -183,7 +199,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 6,
   },
   chipText: { color: "white", fontSize: 14 },
-
   inputRow: {
     flexDirection: "row",
     padding: 8,
