@@ -1,30 +1,35 @@
 //app/appointment/confirmed.tsx
 import React from "react";
-import { SafeAreaView, View, Text, StyleSheet } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import {
+  SafeAreaView,
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
+import { useLocalSearchParams, useRouter, usePathname } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function AppointmentConfirmed() {
+  const router = useRouter();
+  const pathname = usePathname();
+
   const { advisorId, date, slot } = useLocalSearchParams<{
     advisorId: string;
     date: string;
     slot: string;
   }>();
 
-  // Eğer gerekirse, advisor detayını yeniden çekebiliriz
-  // Şimdilik mock isim kullanıyorum:
   const advisorName = `Advisor #${advisorId}`;
-
   const dt = new Date(date);
   const day = dt.getDate();
   const month = dt.toLocaleString("en-US", { month: "short" });
 
-  // Mock öğrenci bilgisi; gerçek kullanıcıdan çekebiliriz
   const studentName = "Student Name";
   const studentSurname = "Surname";
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Üst Bar: Öğrenci Adı + Avatar */}
       <View style={styles.header}>
         <View>
           <Text style={styles.studentName}>{studentName}</Text>
@@ -33,7 +38,6 @@ export default function AppointmentConfirmed() {
         <View style={styles.avatarPlaceholder} />
       </View>
 
-      {/* Onaylandıktan Sonra Gösterilecek Kart */}
       <View style={styles.card}>
         <View style={styles.dateBox}>
           <Text style={styles.dateDay}>{day}</Text>

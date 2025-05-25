@@ -1,10 +1,17 @@
-// app/(tabs)/_layout.tsx
+//app/(tabs)/_layout.tsx
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function TabsLayout() {
   return (
-    <Tabs>
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: "#3b82f6",
+        tabBarStyle: {
+          backgroundColor: "#1e1e1e",
+        },
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
@@ -14,16 +21,36 @@ export default function TabsLayout() {
           ),
         }}
       />
+
       <Tabs.Screen
-        name="explore"
+        name="chatbot"
         options={{
-          title: "Keşfet",
+          title: "Chatbot",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="search" size={size} color={color} />
+            <Ionicons name="chatbubbles-outline" size={size} color={color} />
           ),
         }}
       />
-      {/* İstersen buraya ChatBot veya Appointment için ayrı sekmeler ekle */}
+
+      <Tabs.Screen
+        name="confirmed"
+        options={{
+          title: "Randevu",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="calendar-outline" size={size} color={color} />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: "Profil",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="person-outline" size={size} color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }
