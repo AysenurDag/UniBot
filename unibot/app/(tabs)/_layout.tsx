@@ -15,6 +15,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="index"
         options={{
+          //headerShown: false,
           title: "Home Page",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home" size={size} color={color} />
