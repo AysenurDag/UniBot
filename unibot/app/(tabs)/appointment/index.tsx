@@ -1,15 +1,35 @@
-// app/appointment/index.tsx
-import React, { useEffect, useState } from 'react'
-import { ScrollView, ActivityIndicator, View, Text, StyleSheet } from 'react-native'
+import React, { useEffect, useState, useRef } from 'react'
+import {
+  ScrollView,
+  ActivityIndicator,
+  View,
+  Text,
+  StyleSheet,
+  PanResponder,
+} from 'react-native'
+import { useRouter } from 'expo-router'
 import AdvisorCard from '../../../components/AdvisorCard'
 import { getAdvisors, Advisor } from '../../../services/appointmentService'
-import { useRouter } from 'expo-router'
 
 export default function AppointmentList() {
   const [advisors, setAdvisors] = useState<Advisor[]>([])
   const [loading,  setLoading]  = useState(true)
   const [error,    setError]    = useState<string|null>(null)
   const router = useRouter()
+
+  // ➊ PanResponder ayarı: sağa kaydırınca anasayfaya dön
+  const panResponder = useRef(
+    PanResponder.create({
+      onMoveShouldSetPanResponder: (_, gesture) => {
+        return Math.abs(gesture.dx) > 20 && Math.abs(gesture.dy) < 20
+      },
+      onPanResponderRelease: (_, gesture) => {
+        if (gesture.dx > 50) {
+          router.push('/')      
+        }
+      },
+    })
+  ).current
 
   useEffect(() => {
     getAdvisors()
@@ -36,7 +56,11 @@ export default function AppointmentList() {
     )
 
   return (
-    <ScrollView style={styles.container}>
+    // ➋ panHandlers ekledik
+    <ScrollView
+      style={styles.container}
+      {...panResponder.panHandlers}
+    >
       {advisors.map(a => (
         <AdvisorCard
           key={a.id}

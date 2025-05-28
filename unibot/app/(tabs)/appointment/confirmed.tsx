@@ -22,9 +22,9 @@ export default function ConfirmedPage() {
       </Text>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => router.replace('/')}
+          onPress={() => router.back()}
       >
-        <Text style={styles.buttonText}>Back to Home</Text>
+        <Text style={styles.buttonText}>Back to Appointment</Text>
       </TouchableOpacity>
     </View>
   )
