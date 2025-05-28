@@ -1,10 +1,10 @@
-// app/(tabs)/_layout.tsx
-import { Slot, useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+// app/_layout.tsx
+import React, { useEffect, useState } from "react";
+import { Slot, Redirect, useRouter } from "expo-router";
 import { View, ActivityIndicator } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function TabsLayout() {
+export default function RootLayout() {
   const router = useRouter();
   const [checking, setChecking] = useState(true);
 
@@ -12,8 +12,8 @@ export default function TabsLayout() {
     (async () => {
       const token = await AsyncStorage.getItem("jwtToken");
       if (!token) {
-        // login ekranı (artık /login değil /(auth)/login)
-        router.replace("/(auth)/login");
+        // token yoksa /login'e gönder
+        router.replace("/login");
       }
       setChecking(false);
     })();
@@ -26,11 +26,11 @@ export default function TabsLayout() {
       </View>
     );
   }
+
+  // eğer /login veya /signup rotasındaysak orayı göster, 
+  // aksi halde /(tabs) alt routing'e (Slot) izin ver
   return <Slot />;
 }
-
-
-
 
 
 
