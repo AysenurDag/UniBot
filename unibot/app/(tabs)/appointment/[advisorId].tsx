@@ -187,7 +187,12 @@ export default function AdvisorDetailPage() {
               },
             })
           } else {
-            Alert.alert('Error', res.message ?? 'Failed')
+            
+            Alert.alert(
+              "Randevu Oluşturulamadı",
+              res.message!,
+              [{ text: "Tamam", onPress: () => {/* router.goBack() */ } }]
+            );
           }
         }}
       >

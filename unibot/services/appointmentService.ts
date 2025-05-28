@@ -65,13 +65,13 @@ export async function bookAppointment(
     }>("/Appointment", payload);
     return data;
   } catch (err: any) {
-      Alert.alert(
-    "Randevu Oluşturulamadı",
-    err.message,              
-    [
-      { text: "Tamam", onPress: () => router.replace("/") }
-    ]
-  );
+  //     Alert.alert(
+  //   "Randevu Oluşturulamadı",
+  //   err.message,              
+  //   [
+  //     { text: "Tamam", onPress: () => router.replace("/") }
+  //   ]
+  // );
   
 
     return {
