@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import AuthService, { LoginRequest } from "../services/authService";
+import AuthService, { LoginRequest } from "../../services/authService";
 
 export default function LoginPage() {
   const router = useRouter();

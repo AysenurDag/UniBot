@@ -15,9 +15,15 @@ import {
   View,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function HomeScreen() {
   const router = useRouter();
+  const handleLogout = async () => {
+  await AsyncStorage.removeItem("jwtToken");
+  router.replace("/login");    // Auth stack’ine gidiyor
+};
+
   const rotateAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -71,7 +77,7 @@ export default function HomeScreen() {
                 />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => router.push("/login")}
+           onPress={handleLogout}
                 style={styles.iconButton}
               >
                 <FontAwesome name="user" size={28} color="white" />

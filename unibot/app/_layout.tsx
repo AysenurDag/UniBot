@@ -1,35 +1,5 @@
-// app/_layout.tsx
-import React, { useEffect, useState } from "react";
-import { Slot, useRouter } from "expo-router";
-import { View, ActivityIndicator } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import { Slot } from "expo-router";
 export default function RootLayout() {
-  const router = useRouter();
-  const [checking, setChecking] = useState(true);
-
-  useEffect(() => {
-    (async () => {
-      const token = await AsyncStorage.getItem("jwtToken");
-      if (!token) {
-        // Eğer token yoksa auth grubuna
-        router.replace("/login");
-      } else {
-        // Varsa tabs grubuna
-        router.replace("/(tabs)");
-      }
-    })()
-      .finally(() => setChecking(false));
-  }, []);
-
-  if (checking) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
-
   return <Slot />;
 }
 
