@@ -4,26 +4,37 @@ import apiClient from "./apiClient";
 export interface LoginRequest {
   email: string;
   password: string;
-  role: string;
 }
-// Backend response şöyle gözüküyor:
-// {
-//   "accessToken": "...",
-//   "refreshToken": "…"
-// }
+
 export interface LoginResponse {
   accessToken: string;
-  // eğer lazım olursa refreshToken da ekleyebilirsiniz
   refreshToken?: string;
 }
 
+export interface RegisterRequest {
+  firstName: string;
+  lastName: string;
+  studentNumber: string;
+  email: string;
+  password: string;
+}
+
 export default class AuthService {
+  /** Log in as a Student  */
   static async login(req: LoginRequest): Promise<string> {
+    const payload = { ...req, role: "Student" as const };
     const { data } = await apiClient.post<LoginResponse>(
       "/auth/login",
-      req
+      payload
     );
-    // Önceden data.token diyor olabilir, ama Swagger'da accessToken dönüyor:
     return data.accessToken;
   }
+
+  /** Register a new Student */
+  static async register(req: RegisterRequest): Promise<void> {
+    await apiClient.post("/auth/register", req);
+  }
 }
+
+
+

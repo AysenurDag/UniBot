@@ -25,11 +25,13 @@ export default function LoginPage() {
       return;
     }
 
-      // Burada body’yi logluyoruz:
+ 
   console.log("LOGIN BODY:", { email, password, role: "Student" });
+
     setLoading(true);
   try {
-  const req: LoginRequest = { email, password, role: "Student" };
+  const req: LoginRequest = { email, password  };
+   console.log("LOGIN REQ:", req);
   const token = await AuthService.login(req);
   console.log("🎉 Got token:", token);
   await AsyncStorage.setItem("jwtToken", token);
