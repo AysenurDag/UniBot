@@ -125,6 +125,7 @@ export default function SignupPage() {
   );
 }
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
