@@ -66,7 +66,7 @@ export default function HomeScreen() {
         <SafeAreaView style={{ flex: 1 }}>
           {/* Header */}
           <View style={styles.header}>
-            <Text style={styles.greeting}>Hello</Text>
+            <Text style={styles.greeting}></Text>
 
             <View style={styles.iconRow}>
               <TouchableOpacity
