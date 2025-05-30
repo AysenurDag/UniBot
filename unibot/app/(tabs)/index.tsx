@@ -20,9 +20,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function HomeScreen() {
   const router = useRouter();
   const handleLogout = async () => {
-  await AsyncStorage.removeItem("jwtToken");
-  router.replace("/login");    // Auth stack’ine gidiyor
-};
+    await AsyncStorage.removeItem("jwtToken");
+    router.replace("/login");    // Auth stack’ine gidiyor
+  };
 
   const rotateAnim = useRef(new Animated.Value(0)).current;
 
@@ -69,7 +69,10 @@ export default function HomeScreen() {
             <Text style={styles.greeting}>Hello</Text>
 
             <View style={styles.iconRow}>
-              <TouchableOpacity style={styles.iconButton}>
+              <TouchableOpacity
+                style={styles.iconButton}
+                onPress={() => router.push("/notifications")}
+              >
                 <Ionicons
                   name="notifications-outline"
                   size={28}
