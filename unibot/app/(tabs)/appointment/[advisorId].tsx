@@ -136,10 +136,10 @@ export default function AdvisorDetailPage() {
       />
 
       {/* Slot’lar */}
-      <Text style={styles.subheading}>Available Times</Text>
+      <Text style={styles.subheading}>Uygun Zamanlar</Text>
       <View style={styles.slotsContainer}>
         {slots.length === 0 ? (
-          <Text style={{ color: 'white' }}>No slots available</Text>
+          <Text style={{ color: 'white' }}>Uygun zaman bulunamamıştır</Text>
         ) : (
           slots.map(slot => {
             const isSelected = slot === selectedSlot
@@ -164,7 +164,7 @@ export default function AdvisorDetailPage() {
       </View>
 
       {/* 🎯 Reason alanı */}
-      <Text style={styles.subheading}>Reason</Text>
+      <Text style={styles.subheading}>Görüşme Sebebi</Text>
       <TextInput
         style={styles.reasonInput}
         placeholder="Randevu sebebinizi yazın…"
@@ -211,7 +211,7 @@ export default function AdvisorDetailPage() {
           }
         }}
       >
-        <Text style={styles.createButtonText}>Create Appointment</Text>
+        <Text style={styles.createButtonText}>Randevu Oluştur</Text>
       </TouchableOpacity>
     </ScrollView>
   )

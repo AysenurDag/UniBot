@@ -100,11 +100,10 @@ export default function HomeScreen() {
                 onPress={() => router.push("/chatbot")}
               >
                 <Text style={styles.cardTitle}>
-                  Ask a question to the chatbot
+                  ChatBot'a sor
                 </Text>
                 <Text style={styles.cardDesc}>
-                  Courses, exams, internship, graduation — any subject you can't
-                  find the answer to.
+                  Dersler, Sınavlar, Staj, Mezuniyet — cevabını bulamadığın herhangi bir konu
                 </Text>
                 <Ionicons
                   name="chatbubbles-outline"
@@ -124,9 +123,9 @@ export default function HomeScreen() {
                 style={styles.card}
                 onPress={() => router.push("/appointment/advisors")}
               >
-                <Text style={styles.cardTitle}>Make an appointment</Text>
+                <Text style={styles.cardTitle}>Randevu Al</Text>
                 <Text style={styles.cardDesc}>
-                  Schedule a meeting with academic advisors.
+                  Akademik danışmanlarla bir görüşme planlayın.
                 </Text>
                 <Ionicons
                   name="calendar-outline"
