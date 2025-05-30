@@ -1,6 +1,8 @@
 // app/(tabs)/profile.tsx
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
+
 import {
   SafeAreaView,
   StyleSheet,
@@ -11,6 +13,11 @@ import {
 
 export default function ProfilePage() {
   const router = useRouter();
+
+  const handleLogout = async () => {
+  await AsyncStorage.removeItem("jwtToken");
+  router.replace("/login");    // Auth stack’ine gidiyor
+};
 
   return (
     <SafeAreaView style={styles.container}>
@@ -35,7 +42,7 @@ export default function ProfilePage() {
 
         <TouchableOpacity
           style={[styles.infoBox, styles.exitButton]}
-          onPress={() => router.replace("/login")}
+             onPress={handleLogout}
         >
           <Text style={styles.infoText}>Exit</Text>
         </TouchableOpacity>
