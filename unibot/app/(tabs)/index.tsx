@@ -66,7 +66,7 @@ export default function HomeScreen() {
         <SafeAreaView style={{ flex: 1 }}>
           {/* Header */}
           <View style={styles.header}>
-            <Text style={styles.greeting}>Hello, Student</Text>
+            <Text style={styles.greeting}>Hello</Text>
 
             <View style={styles.iconRow}>
               <TouchableOpacity style={styles.iconButton}>
@@ -76,12 +76,12 @@ export default function HomeScreen() {
                   color="white"
                 />
               </TouchableOpacity>
-              <TouchableOpacity
+              {/* <TouchableOpacity
            onPress={handleLogout}
                 style={styles.iconButton}
               >
                 <FontAwesome name="user" size={28} color="white" />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </View>
 
@@ -119,7 +119,7 @@ export default function HomeScreen() {
             >
               <TouchableOpacity
                 style={styles.card}
-                onPress={() => router.push("/appointment")}
+                onPress={() => router.push("/appointment/advisors")}
               >
                 <Text style={styles.cardTitle}>Make an appointment</Text>
                 <Text style={styles.cardDesc}>

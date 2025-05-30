@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     flex: 1, // ✨ Tüm ekranı kapla
     backgroundColor: "#121212",
     padding: 24,
-    borderRadius: 0, // Gerekirse bunu bile silebilirsin
+    borderRadius: 0, 
   },
   headerRow: {
     flexDirection: "row",

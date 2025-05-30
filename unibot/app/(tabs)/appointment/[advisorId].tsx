@@ -48,33 +48,47 @@ export default function AdvisorDetailPage() {
 
   // 2) Tarih veya advisor değişince availability’i çek
   useEffect(() => {
-    if (!advisor) return
-    const day = selectedDate.toISOString().split('T')[0] // "YYYY-MM-DD"
+    if (!advisor) return;
+    const day = selectedDate.toISOString().split("T")[0]; // “YYYY-MM-DD”
+
     getAvailability(advisor.id, day)
       .then(avails => {
+        // ① Sadece aynı günün bloklarını al
+        const todayBlocks = avails.filter(a =>
+          a.startTime.startsWith(day) &&
+          a.endTime.startsWith(day)
+        )
+
+        // ② Opsiyonel: 09:00–17:00 dışındakileri de siliyoruz
+        const workHours = todayBlocks.filter(({ startTime, endTime }) =>
+          new Date(startTime).getHours() >= 9 &&
+          new Date(endTime).getHours() <= 17
+        )
+
+        // ③ Yine 15’er dakikalık slot üret
         const computed: string[] = []
-        avails.forEach(({ startTime, endTime }) => {
+        workHours.forEach(({ startTime, endTime }) => {
           const start = new Date(startTime)
           const end = new Date(endTime)
           const cur = new Date(start)
           while (cur < end) {
             computed.push(
               cur.toLocaleTimeString([], {
-                hour: '2-digit',
-                minute: '2-digit',
+                hour: "2-digit",
+                minute: "2-digit",
               })
             )
             cur.setMinutes(cur.getMinutes() + 15)
           }
         })
-        setSlots(computed)
-        setSelectedSlot(null)
+
+        // ④ Son olarak duplicate’leri temizle (istersen)
+        const uniqueSlots = Array.from(new Set(computed))
+        setSlots(uniqueSlots)
       })
-      .catch(err => {
-        console.error('Availability yüklenirken hata', err)
-        setSlots([])
-      })
+      .catch(err => console.error(err))
   }, [advisor, selectedDate])
+
 
   if (loading)
     return (
@@ -182,12 +196,13 @@ export default function AdvisorDetailPage() {
               pathname: '/appointment/confirmed',
               params: {
                 advisorId: advisor.id.toString(),
+                academicianName: advisor.firstName + " " + advisor.lastName,
                 date: iso,
                 slot: selectedSlot!,
               },
             })
           } else {
-            
+
             Alert.alert(
               "Randevu Oluşturulamadı",
               res.message!,

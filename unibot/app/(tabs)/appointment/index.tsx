@@ -1,80 +1,108 @@
-import React, { useEffect, useState, useRef } from 'react'
-import {
-  ScrollView,
-  ActivityIndicator,
-  View,
-  Text,
-  StyleSheet,
-  PanResponder,
-} from 'react-native'
-import { useRouter } from 'expo-router'
-import AdvisorCard from '../../../components/AdvisorCard'
-import { getAdvisors, Advisor } from '../../../services/appointmentService'
+import React, { useEffect, useState } from "react";
+import { View, Text, FlatList, StyleSheet, ActivityIndicator } from "react-native";
+import { getMyAppointments, AppointmentSummary } from "../../../services/appointmentService";  
 
-export default function AppointmentList() {
-  const [advisors, setAdvisors] = useState<Advisor[]>([])
-  const [loading,  setLoading]  = useState(true)
-  const [error,    setError]    = useState<string|null>(null)
-  const router = useRouter()
+// Randevu durumları için etiketler
+const statusLabels = ["Pending", "Approved", "Rejected"];
 
-  // ➊ PanResponder ayarı: sağa kaydırınca anasayfaya dön
-  const panResponder = useRef(
-    PanResponder.create({
-      onMoveShouldSetPanResponder: (_, gesture) => {
-        return Math.abs(gesture.dx) > 20 && Math.abs(gesture.dy) < 20
-      },
-      onPanResponderRelease: (_, gesture) => {
-        if (gesture.dx > 50) {
-          router.push('/')      
-        }
-      },
-    })
-  ).current
+export default function MyAppointmentsPage() {
+    const [items, setItems] = useState<AppointmentSummary[]>([]);
+    const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    getAdvisors()
-      .then(setAdvisors)
-      .catch(e => {
-        console.error(e)
-        setError('Danışmanlar yüklenemedi.')
-      })
-      .finally(() => setLoading(false))
-  }, [])
+    useEffect(() => {
+        // API'den randevuları çek
+        getMyAppointments()
+            .then(setItems) // Randevular başarıyla çekilirse state'i güncelle
+            .catch(err => console.error("Randevular yüklenirken hata oluştu:", err)) // Hata durumunda konsola yaz
+            .finally(() => setLoading(false)); // Yükleme durumunu bitir
+    }, []); // Sadece bir kere çalışması için boş dependency array
 
-  if (loading)
+    // Yükleme durumunda ActivityIndicator göster
+    if (loading) {
+        return (
+            <View style={styles.center}>
+                <ActivityIndicator size="large" color="#3b82f6" />
+            </View>
+        );
+    }
+
+    // Hiç randevu yoksa mesaj göster
+    if (items.length === 0) {
+        return (
+            <View style={styles.center}>
+                <Text style={styles.empty}>Henüz randevunuz yok.</Text>
+            </View>
+        );
+    }
+
+    // Randevular varsa FlatList ile listele
     return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color="#FFF" />
-      </View>
-    )
+        <FlatList
+            data={items} // Listelenecek veri
+            keyExtractor={item => item.id.toString()}  
+              style={{ flex:1, backgroundColor:'#121212' }}
+            contentContainerStyle={styles.list} // Listeye stil
+            renderItem={({ item }) => ( // Her bir randevu öğesini render et
 
-  if (error)
-    return (
-      <View style={styles.center}>
-        <Text style={{ color: 'white' }}>{error}</Text>
-      </View>
-    )
+                <View style={styles.card}>
+                    <Text style={styles.title}>{item.academicianName}</Text>
 
-  return (
-    // ➋ panHandlers ekledik
-    <ScrollView
-      style={styles.container}
-      {...panResponder.panHandlers}
-    >
-      {advisors.map(a => (
-        <AdvisorCard
-          key={a.id}
-          name={a.firstName + ' ' + a.lastName}
-          title={a.title ?? a.department}
-          description={a.department}
-          onPress={() => router.push(`/appointment/${a.id}`)}
+                    {/* Tek Text içinde hem tarih, hem saat, hem dash */}
+                    <Text style={styles.cardText}>
+                        {new Date(item.startTime).toLocaleDateString()}{" "}
+                        {new Date(item.startTime).toLocaleTimeString()}{" "}
+                        –{" "}
+                        {new Date(item.endTime).toLocaleTimeString()}
+                    </Text>
+
+                    <Text style={styles.cardText}>
+                        Status: {statusLabels[item.status]}
+                    </Text>
+                    <Text style={styles.cardText}>
+                        Reason: {item.reason}
+                    </Text>
+                </View>
+
+            )}
         />
-      ))}
-    </ScrollView>
-  )
+    );
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 20, backgroundColor: '#121212' },
-  center:    { flex:1, justifyContent:'center', alignItems:'center', backgroundColor:'#121212' }
-})
+    center: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#121212", // Arka plan rengini 
+    },
+    empty: {
+        color: "#888",
+        fontSize: 16,
+    },
+    list: {
+        padding: 16,
+        backgroundColor: "#121212", // Listeye arka plan rengi  
+    },
+    card: {
+        backgroundColor: "#1e1e1e", // Kartın arka planı
+        padding: 16,
+        borderRadius: 12,
+        marginBottom: 12,
+        shadowColor: "#000", // Shadow ekledim
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    title: {
+        color: "white",
+        fontSize: 18,
+        fontWeight: "bold",
+        marginBottom: 4,
+    },
+    cardText: {
+        color: "#ccc", // Karttaki yazıların rengi 
+        fontSize: 14,
+        marginBottom: 2,
+    }
+});

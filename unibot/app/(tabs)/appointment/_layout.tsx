@@ -1,3 +1,4 @@
+// unibot/app/(tabs)/appointment/_layout.tsx
 import React from "react";
 import { Stack } from "expo-router";
 import { TouchableOpacity } from "react-native";
@@ -10,22 +11,20 @@ export default function AppointmentLayout() {
         headerStyle: { backgroundColor: "#121212" },
         headerTintColor: "#FFF",
         headerTitleStyle: { fontWeight: "600" },
-
-          gestureEnabled: true,
-          gestureDirection: "horizontal",
-          animation: "slide_from_right",
-
+        gestureEnabled: true,
+        gestureDirection: "horizontal",
+        animation: "slide_from_right",
       }}
     >
-      {/* 1) /appointment → Advisors list */}
+      {/* 1) /appointment rotası (yani ana rota) --> My Appointments sayfası olacak */}
       <Stack.Screen
-        name="index"
+        name="index" 
         options={({ navigation }) => ({
-          title: "Advisors",
+          title: "My Appointments", // Bu ekranın başlığı
           headerLeft: () => (
             <TouchableOpacity
               style={{ marginLeft: 12 }}
-              onPress={() => navigation.goBack()}  
+              onPress={() => navigation.goBack()} // Geri butonu
             >
               <Ionicons name="chevron-back" size={24} color="white" />
             </TouchableOpacity>
@@ -33,21 +32,27 @@ export default function AppointmentLayout() {
         })}
       />
 
-      {/* 2) /appointment/[advisorId] → Book Appointment */}
+      {/* 2) /appointment/advisors rotası --> Advisors List sayfası olacak */}
+      <Stack.Screen
+        name="advisors"  
+        options={{
+          title: "Advisors", // Bu ekranın başlığı
+        }}
+      />
+
+      {/* 3) /appointment/[advisorId] rotası --> Randevu Oluşturma Detay sayfası */}
       <Stack.Screen
         name="[advisorId]"
         options={{
           title: "Book Appointment",
-          // built-in back button kullanılacak
         }}
       />
 
-      {/* 3) /appointment/confirmed → Confirmed */}
+      {/* 4) /appointment/confirmed rotası --> Randevu Onay sayfası */}
       <Stack.Screen
         name="confirmed"
         options={{
           title: "Confirmed",
-          // built-in back button kullanılacak
         }}
       />
     </Stack>

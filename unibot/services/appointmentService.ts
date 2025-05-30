@@ -9,17 +9,36 @@ export interface Advisor {
   id: number;
   firstName: string;
   lastName: string;
-  title:      string;
+  title: string;
   department: string;
-   
+
 }
 export interface Availability {
   startTime: string  // ISO string
-  endTime:   string
+  endTime: string
 }
 
-const USE_MOCK = false;
- 
+interface AppointmentDto {
+  id: number;
+  startTime: string;
+  endTime: string;
+  reason: string;
+  status: number;
+  studentId: number;
+  academicianId: number;
+  academicianName: string;
+  studentName: string;
+}
+
+export interface AppointmentSummary {
+  id: number;
+  startTime: string;
+  endTime: string;
+  studentName: string;
+  academicianName: string;
+  status: number;
+  reason?: string;
+}
 
 /** Seçilen akademisyen ve güne ait availability bloklarını döner */
 export async function getAvailability(
@@ -59,28 +78,34 @@ export async function bookAppointment(
     academicianId: advisorId,
   };
   try {
-    const { data } = await api.post<{
-      success: boolean;
-      message?: string;
-    }>("/Appointment", payload);
-    return data;
+    // Eğer HTTP 2xx geldiyse catch tetiklenmez:
+    await api.post("/Appointment", payload);
+    return { success: true };
   } catch (err: any) {
-  //     Alert.alert(
-  //   "Randevu Oluşturulamadı",
-  //   err.message,              
-  //   [
-  //     { text: "Tamam", onPress: () => router.replace("/") }
-  //   ]
-  // );
-  
-
-    return {
-      success: false,
-      message:
-        err.response?.data?.message ||
-        err.response?.data ||
-        err.message ||
-        "Booking failed",
-    };
+    // Hata kodu gelirse burası çalışır
+    const message =
+      err.response?.data?.message ||
+      err.response?.data ||
+      err.message ||
+      "Booking failed";
+    return { success: false, message };
   }
+}
+
+
+export async function getMyAppointments(): Promise<AppointmentSummary[]> {
+  // 1) önce tam DTO’yu çek
+  const { data } = await api.get<AppointmentDto[]>("/Appointment/me");
+
+  // yalnızca ihtiyacımız olan alanları dön
+  return data.map((a) => ({
+    id: a.id,
+    startTime: a.startTime,
+    endTime: a.endTime,
+    studentName: a.studentName,
+    academicianName: a.academicianName,
+    status: a.status,
+    reason: a.reason || "No reason provided",
+  }));
+
 }

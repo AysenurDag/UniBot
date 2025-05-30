@@ -1,61 +1,98 @@
-// app/appointment/confirmed.tsx
-import React from 'react'
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
-import { useRouter, useLocalSearchParams } from 'expo-router'
+// app/(tabs)/appointment/confirmed.tsx
+import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  StatusBar,
+} from "react-native";
+import { useRouter, useLocalSearchParams } from "expo-router";
 
 export default function ConfirmedPage() {
-  const router = useRouter()
-  const { advisorId, date, slot } = useLocalSearchParams<{
-    advisorId: string
-    date: string
-    slot: string
-  }>()
+  const router = useRouter();
+  const { advisorId, academicianName, date, slot } =
+    useLocalSearchParams<{
+      advisorId: string;
+      academicianName?: string;
+      date: string;
+      slot: string;
+    }>();
+
+  const displayName = academicianName ?? `ID: ${advisorId}`;
+  const displayDate = new Date(date).toLocaleDateString("tr-TR", {
+    weekday: "short",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Your appointment is confirmed!</Text>
-      <Text style={styles.detail}>
-        Advisor: {advisorId}
-      </Text>
-      <Text style={styles.detail}>
-        When: {new Date(date).toLocaleDateString()} @ {slot}
-      </Text>
+      <StatusBar barStyle="light-content" />
+
+      <Text style={styles.title}>Randevun Başarıyla Oluşturuldu!</Text>
+
+      <View style={styles.details}>
+        <Text style={styles.detailLabel}>Danışman</Text>
+        <Text style={styles.detailValue}>{displayName}</Text>
+      </View>
+
+      <View style={styles.details}>
+        <Text style={styles.detailLabel}>Tarih & Saat</Text>
+        <Text style={styles.detailValue}>
+          {displayDate} @ {slot}
+        </Text>
+      </View>
+
       <TouchableOpacity
         style={styles.button}
-          onPress={() => router.back()}
+        onPress={() => router.replace("/appointment")}
       >
-        <Text style={styles.buttonText}>Back to Appointment</Text>
+        <Text style={styles.buttonText}>Randevuları Gör</Text>
       </TouchableOpacity>
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#121212",
+    alignItems: "center",
+    justifyContent: "center",
     padding: 20,
   },
   title: {
+    color: "#3b82f6",
     fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 16,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: 24,
   },
-  detail: {
-    fontSize: 16,
-    marginBottom: 8,
+  details: {
+    width: "100%",
+    marginBottom: 12,
+  },
+  detailLabel: {
+    color: "#aaa",
+    fontSize: 14,
+  },
+  detailValue: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "600",
   },
   button: {
-    marginTop: 24,
-    backgroundColor: '#4A6CF7',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
+    marginTop: 32,
+    backgroundColor: "#3b82f6",
+    paddingVertical: 14,
+    paddingHorizontal: 32,
     borderRadius: 8,
   },
   buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
+    color: "#121212",
+    fontSize: 16,
+    fontWeight: "bold",
   },
-})
+});

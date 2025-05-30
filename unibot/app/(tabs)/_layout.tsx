@@ -1,18 +1,49 @@
-// app/(tabs)/_layout.tsx
+// unibot/app/(tabs)/_layout.tsx
 import React from "react";
 import { Tabs } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function TabsLayout() {
   return (
-    <Tabs>
-      <Tabs.Screen name="index" options={{ title: "Home" }} />
-      <Tabs.Screen name="chatbot" options={{ title: "Chatbot" }} />
-      <Tabs.Screen name="appointment" options={{ title: "Appointments" }} />
-      {/* vs */}
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: "#3b82f6",
+        tabBarStyle: { backgroundColor: "#000" },
+      }}
+    >
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: "Home",
+          tabBarIcon: ({ color }) => <Ionicons name="home-outline" size={20} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="chatbot"
+        options={{
+          title: "Chatbot",
+          tabBarIcon: ({ color }) => <Ionicons name="chatbubbles-outline" size={20} color={color} />,
+        }}
+      />
+      {/* BURASI SADECE `appointment` KLASÖRÜNE GİDECEK */}
+      <Tabs.Screen
+        name="appointment" //  Çünkü index.tsx (My Appointments) varsayılan olacak.
+        options={{
+          title: "My Appointments", // Footer'da bu başlık görünecek
+          tabBarIcon: ({ color }) => <Ionicons name="calendar-outline" size={20} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: "Profile",
+          tabBarIcon: ({ color }) => <Ionicons name="person-outline" size={20} color={color} />,
+        }}
+      />
     </Tabs>
   );
 }
-
 
 
 // //app/(tabs)/_layout.tsx
