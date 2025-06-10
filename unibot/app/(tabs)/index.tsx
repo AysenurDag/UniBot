@@ -15,9 +15,15 @@ import {
   View,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function HomeScreen() {
   const router = useRouter();
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem("jwtToken");
+    router.replace("/login");    // Auth stack’ine gidiyor
+  };
+
   const rotateAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -60,22 +66,25 @@ export default function HomeScreen() {
         <SafeAreaView style={{ flex: 1 }}>
           {/* Header */}
           <View style={styles.header}>
-            <Text style={styles.greeting}>Hello, Student</Text>
+            <Text style={styles.greeting}></Text>
 
             <View style={styles.iconRow}>
-              <TouchableOpacity style={styles.iconButton}>
+              <TouchableOpacity
+                style={styles.iconButton}
+                onPress={() => router.push("/notifications")}
+              >
                 <Ionicons
                   name="notifications-outline"
                   size={28}
                   color="white"
                 />
               </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => router.push("/login")}
+              {/* <TouchableOpacity
+           onPress={handleLogout}
                 style={styles.iconButton}
               >
                 <FontAwesome name="user" size={28} color="white" />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </View>
 
@@ -91,11 +100,10 @@ export default function HomeScreen() {
                 onPress={() => router.push("/chatbot")}
               >
                 <Text style={styles.cardTitle}>
-                  Ask a question to the chatbot
+                  ChatBot'a sor
                 </Text>
                 <Text style={styles.cardDesc}>
-                  Courses, exams, internship, graduation — any subject you can't
-                  find the answer to.
+                  Dersler, Sınavlar, Staj, Mezuniyet — cevabını bulamadığın herhangi bir konu
                 </Text>
                 <Ionicons
                   name="chatbubbles-outline"
@@ -113,11 +121,11 @@ export default function HomeScreen() {
             >
               <TouchableOpacity
                 style={styles.card}
-                onPress={() => router.push("/appointment")}
+                onPress={() => router.push("/appointment/advisors")}
               >
-                <Text style={styles.cardTitle}>Make an appointment</Text>
+                <Text style={styles.cardTitle}>Randevu Al</Text>
                 <Text style={styles.cardDesc}>
-                  Schedule a meeting with academic advisors.
+                  Akademik danışmanlarla bir görüşme planlayın.
                 </Text>
                 <Ionicons
                   name="calendar-outline"

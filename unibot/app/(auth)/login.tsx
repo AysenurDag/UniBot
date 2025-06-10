@@ -7,17 +7,41 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Alert,
 } from "react-native";
 import { useRouter } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import AuthService, { LoginRequest } from "../../services/authService";
 
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = () => {
-    // TODO: validation + API call vs.
-    router.replace("/(tabs)");
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert("Eksik alan", "Email ve şifre doldurulmalı");
+      return;
+    }
+
+ 
+  console.log("LOGIN BODY:", { email, password, role: "Student" });
+
+    setLoading(true);
+  try {
+  const req: LoginRequest = { email, password  };
+   console.log("LOGIN REQ:", req);
+  const token = await AuthService.login(req);
+  console.log("🎉 Got token:", token);
+  await AsyncStorage.setItem("jwtToken", token);
+  router.replace("/(tabs)");
+} catch (err: any) {
+  console.error("LOGIN ERROR:", err.response?.data ?? err.message);
+  Alert.alert("Giriş Hatası", err.response?.data ?? err.message);
+} finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -43,8 +67,14 @@ export default function LoginPage() {
         secureTextEntry
       />
 
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Log In</Text>
+      <TouchableOpacity
+        style={[styles.button, loading && { opacity: 0.6 }]}
+        onPress={handleLogin}
+        disabled={loading}
+      >
+        <Text style={styles.buttonText}>
+          {loading ? "Logging in…" : "Log In"}
+        </Text>
       </TouchableOpacity>
 
       <View style={styles.footer}>
@@ -56,6 +86,7 @@ export default function LoginPage() {
     </SafeAreaView>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -107,3 +138,49 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

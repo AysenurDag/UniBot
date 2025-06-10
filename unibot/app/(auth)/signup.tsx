@@ -1,4 +1,4 @@
-// app/signup.tsx
+// app/(auth)/signup.tsx
 import React, { useState } from "react";
 import {
   SafeAreaView,
@@ -7,70 +7,62 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Alert,
+  ActivityIndicator,
 } from "react-native";
 import { useRouter } from "expo-router";
+import AuthService, { RegisterRequest } from "../../services/authService";
 
 export default function SignupPage() {
   const router = useRouter();
-
-  // Rol seçimi: öğrenci mi, danışman mı?
-  const [role, setRole] = useState<"student" | "advisor">("student");
-
-  // Form alanları
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [studentNumber, setStudentNumber] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSignup = () => {
-    // TODO: validation + API çağrısı
-    // Başarılıysa login sayfasına veya ana sekmeye yönlendirme
-    router.replace("/login");
+  const handleSignup = async () => {
+    if (
+      !firstName.trim() ||
+      !lastName.trim() ||
+      !studentNumber.trim() ||
+      !email.trim() ||
+      !password.trim()
+    ) {
+      Alert.alert("Eksik Alan", "Lütfen tüm alanları doldurun.");
+      return;
+    }
+
+    setLoading(true);
+    const req: RegisterRequest = {
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      studentNumber: studentNumber.trim(),
+      email: email.trim(),
+      password: password.trim(),
+    };
+
+    try {
+      await AuthService.register(req);
+      Alert.alert("Başarılı", "Kayıt başarılı! Lütfen giriş yapın.", [
+        { text: "Tamam", onPress: () => router.replace("/login") },
+      ]);
+    } catch (err: any) {
+      console.error("REGISTER ERROR:", err.response ?? err.message);
+      Alert.alert(
+        "Kayıt Hatası",
+        err.response?.data?.message || err.response?.data || err.message
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Sign Up</Text>
 
-      {/* Rol seçimi */}
-      <View style={styles.roleSelector}>
-        <TouchableOpacity
-          style={[
-            styles.roleButton,
-            role === "student" && styles.roleButtonActive,
-          ]}
-          onPress={() => setRole("student")}
-        >
-          <Text
-            style={[
-              styles.roleText,
-              role === "student" && styles.roleTextActive,
-            ]}
-          >
-            Student
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[
-            styles.roleButton,
-            role === "advisor" && styles.roleButtonActive,
-          ]}
-          onPress={() => setRole("advisor")}
-        >
-          <Text
-            style={[
-              styles.roleText,
-              role === "advisor" && styles.roleTextActive,
-            ]}
-          >
-            Advisor
-          </Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Ortak alanlar */}
       <TextInput
         style={styles.input}
         placeholder="First Name"
@@ -85,20 +77,14 @@ export default function SignupPage() {
         value={lastName}
         onChangeText={setLastName}
       />
-
-      {/* Sadece öğrenci rolünde */}
-      {role === "student" && (
-        <TextInput
-          style={styles.input}
-          placeholder="Student Number"
-          placeholderTextColor="#888"
-          value={studentNumber}
-          onChangeText={setStudentNumber}
-          keyboardType="number-pad"
-        />
-      )}
-
-      {/* Ortak alanlar */}
+      <TextInput
+        style={styles.input}
+        placeholder="Student Number"
+        placeholderTextColor="#888"
+        value={studentNumber}
+        onChangeText={setStudentNumber}
+        keyboardType="number-pad"
+      />
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -117,19 +103,28 @@ export default function SignupPage() {
         secureTextEntry
       />
 
-      <TouchableOpacity style={styles.button} onPress={handleSignup}>
-        <Text style={styles.buttonText}>Sign Up</Text>
+      <TouchableOpacity
+        style={[styles.button, loading && { opacity: 0.6 }]}
+        onPress={handleSignup}
+        disabled={loading}
+      >
+        {loading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.buttonText}>Sign Up</Text>
+        )}
       </TouchableOpacity>
 
       <View style={styles.footer}>
         <Text style={styles.footerText}>Already have an account? </Text>
-        <TouchableOpacity onPress={() => router.push("/login")}>
+        <TouchableOpacity onPress={() => router.replace("/login")}>
           <Text style={[styles.footerText, styles.link]}>Log In</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -144,32 +139,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 30,
     alignSelf: "center",
-  },
-  roleSelector: {
-    flexDirection: "row",
-    justifyContent: "center",
-    marginBottom: 20,
-  },
-  roleButton: {
-    flex: 1,
-    paddingVertical: 10,
-    marginHorizontal: 5,
-    borderWidth: 1,
-    borderColor: "#444",
-    borderRadius: 8,
-    alignItems: "center",
-  },
-  roleButtonActive: {
-    backgroundColor: "#3b82f6",
-    borderColor: "#3b82f6",
-  },
-  roleText: {
-    color: "#bbb",
-    fontSize: 16,
-  },
-  roleTextActive: {
-    color: "white",
-    fontWeight: "bold",
   },
   input: {
     height: 48,
